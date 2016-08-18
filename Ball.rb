@@ -21,26 +21,10 @@ class Ball
 	def update
 		@colliding = false
 		@collision_point = false
-		self.move
-		
-	end
-	
-	def draw
-			if @colliding == false
-				@window.circle_img.draw_rot(@x+$window_width/2-$camera_x, @y+$window_height/2-$camera_y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xffFF0000)
-			else
-				@window.circle_img.draw_rot(@x+$window_width/2-$camera_x, @y+$window_height/2-$camera_y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xff00FF00)
-				if @collision_point == true
-					@window.circle_img.draw_rot(@collisionPointX+$window_width/2-$camera_x, @collisionPointY+$window_height/2-$camera_y, 1, @dir, 0.5, 0.5, 1.0*(7.0/50.0), 1.0*(7.0/50.0), 0xff0000FF)
-				end
-			end
-	end
-	
-	def move
+
 		### Move the ball
 		@x = @x + @vel_x
 		@y = @y + @vel_y
-		
 		
 		### Check collision with walls
 		if @x > ($universe_width-@radius) and @vel_x > 0
@@ -56,6 +40,17 @@ class Ball
 		
 		if @y < @radius and @vel_y < 0
 			@vel_y = -@vel_y
+		end
+	end
+	
+	def draw
+		if @colliding == false
+			@window.circle_img.draw_rot(@x+$window_width/2-$camera_x, @y+$window_height/2-$camera_y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xffFF0000)
+		else
+			@window.circle_img.draw_rot(@x+$window_width/2-$camera_x, @y+$window_height/2-$camera_y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xff00FF00)
+			if @collision_point == true
+				@window.circle_img.draw_rot(@collisionPointX+$window_width/2-$camera_x, @collisionPointY+$window_height/2-$camera_y, 1, @dir, 0.5, 0.5, 1.0*(7.0/50.0), 1.0*(7.0/50.0), 0xff0000FF)
+			end
 		end
 	end
 	
@@ -90,10 +85,6 @@ class Ball
 		
 		@vel_x = new_vel[0]
 		@vel_y = new_vel[1]
-		
-		# @x = @x + @vel_x
-		# @y = @y + @vel_y
-		
 	end
 	
 	def new_velocity(m1, m2, v1, v2, c1, c2)
@@ -111,10 +102,6 @@ class Ball
 			return v_new  ### Vector
 		end
 		
-	end
-	
-	def get_kin
-		return (@mass * (@vel_x**2+@vel_y**2))
 	end
 	
 end
