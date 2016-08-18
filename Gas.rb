@@ -39,12 +39,6 @@ class GameWindow < Gosu::Window
 		## Creates the objects
 		self.restart
 		
-		## Kinetic Energy
-		@kinetic_energy = 0.0
-		@kin_big = 0.0
-		@kin_small = 0.0
-		@kin_dif_array = []
-		
 	end
 	
 	def restart  #### When you press Z, this method gets called
@@ -64,7 +58,7 @@ class GameWindow < Gosu::Window
 		@kin_big = 0.0
 		@kin_small = 0.0
 		
-		self.caption = "Elastic Collision  -  [FPS: #{Gosu::fps.to_s}]"
+		self.caption = "Gas  -  [FPS: #{Gosu::fps.to_s}]"
 		
 		if @update_balls == true
 			
@@ -73,44 +67,6 @@ class GameWindow < Gosu::Window
 			## CHECK FOR BALL COLLISION. THIS IS DONE BY THE WINDOW, NOT BY EACH BALL. THE REASON IS OPTIMISATION.
 			self.check_ball_collision
 		
-		end
-		
-		## Kinetic Energy. Currently not used.
-		for i in 0..$balls.length-1
-			
-			if $balls[i].mass > 500.0
-				@kin_big += $balls[i].get_kin
-			else
-				@kin_small += $balls[i].get_kin
-			end
-			
-			# @kinetic_energy += $balls[i].get_kin
-		end
-		
-		# puts "@kin_big : #{@kin_big} ... @kin_small : #{@kin_small}"
-		# puts @kin_big - @kin_small
-		
-		@kin_dif_array << (@kin_big - @kin_small)
-		
-		if @kin_dif_array.length > 500
-			@kin_dif_array.shift
-		end
-		
-		# puts @kinetic_energy
-		
-		
-		### MOVE THE CAMERA
-		if button_down? Gosu::KbLeft
-			$camera_x += -4
-		end
-		if button_down? Gosu::KbRight
-			$camera_x += 4
-		end
-		if button_down? Gosu::KbUp
-			$camera_y += -4
-		end
-		if button_down? Gosu::KbDown
-			$camera_y += 4
 		end
 		
 	end
@@ -133,21 +89,6 @@ class GameWindow < Gosu::Window
 		
 		## Draw the balls
 		$balls.each     { |inst|  inst.draw }
-		
-		## Display the amount of balls
-		@font.draw("Balls : #{$balls.length}", 10, 10, 1, 1.0, 1.0, 0xffffffff)
-		
-		
-		### Kinetic Energy
-		# draw_line(0, 300, 0xaaffffff, WIDTH, 300, 0xaaffffff, 0)
-		
-		# for i in 0..@kin_dif_array.length-1
-			
-			# y_offset = @kin_dif_array[i]/1000.0
-			
-			# @point_img.draw_rot(50 + i, 300 + y_offset*4, 1, 0, 0.5, 0.5, 0.5, 0.5, 0xffffff00)
-			
-		# end
 		
 		### Draw the universe borders
 		draw_line(0+$window_width/2-$camera_x, 0+$window_height/2-$camera_y, 0xffffffff, $universe_width+$window_width/2-$camera_x, 0+$window_height/2-$camera_y, 0xffffffff, 0)
