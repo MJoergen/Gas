@@ -27,29 +27,29 @@ class Ball
 		@y = @y + @vel_y
 		
 		### Check collision with walls
-		if @x > ($universe_width-@radius) and @vel_x > 0
+		if @x+@radius > @window.univ_right and @vel_x > 0
 			@vel_x = -@vel_x
 		end
-		if @x < @radius and @vel_x < 0
+		if @x-@radius < @window.univ_left and @vel_x < 0
 			@vel_x = -@vel_x
 		end
 		
-		if @y > ($universe_height-@radius) and @vel_y > 0
+		if @y+@radius > @window.univ_top and @vel_y > 0
 			@vel_y = -@vel_y
 		end
 		
-		if @y < @radius and @vel_y < 0
+		if @y-@radius < @window.univ_bottom and @vel_y < 0
 			@vel_y = -@vel_y
 		end
 	end
 	
 	def draw
 		if @colliding == false
-			@window.circle_img.draw_rot(30+@x, 70+@y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xffFF0000)
+			@window.circle_img.draw_rot(@x, @y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xffFF0000)
 		else
-			@window.circle_img.draw_rot(30+@x, 70+@y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xff00FF00)
+			@window.circle_img.draw_rot(@x, @y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xff00FF00)
 			if @collision_point == true
-				@window.circle_img.draw_rot(30+@collisionPointX, 70+@collisionPointY, 1, @dir, 0.5, 0.5, 1.0*(7.0/50.0), 1.0*(7.0/50.0), 0xff0000FF)
+				@window.circle_img.draw_rot(@collisionPointX, @collisionPointY, 1, @dir, 0.5, 0.5, 1.0*(7.0/50.0), 1.0*(7.0/50.0), 0xff0000FF)
 			end
 		end
 	end

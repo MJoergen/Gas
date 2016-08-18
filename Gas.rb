@@ -4,24 +4,20 @@ require_relative 'Ball'
 
 class GameWindow < Gosu::Window
 	
-	WIDTH = 860
+	WIDTH  = 860
 	HEIGHT = 540
-	TITLE = "Just another ruby project"
 	
 	attr_reader :circle_img
-	
+  attr_reader :univ_left, :univ_right, :univ_top, :univ_bottom
+  
 	def initialize
 		
 		super(WIDTH, HEIGHT, false)
-		self.caption = TITLE
 		
-		## The size of the window
-		$window_width = WIDTH*1.0
-		$window_height = HEIGHT*1.0
-		
-		## The size of the "universe"
-		$universe_width = $window_width - 60.0
-		$universe_height = $window_height - 140.0
+    @univ_left   = 30
+    @univ_right  = WIDTH - 30
+    @univ_bottom = 70
+    @univ_top    = HEIGHT - 70
 		
 		## Only two images are used in this program
 		@point_img  = Gosu::Image.new(self, "media/Point2.png", true)
@@ -30,10 +26,6 @@ class GameWindow < Gosu::Window
 		## Default font
 		@font = Gosu::Font.new(self, Gosu::default_font_name, 16)
 		
-		## Camera coordinates
-		$camera_x = $universe_width/2
-		$camera_y = $universe_height/2
-		
 		## Game is paused by default. Unpause by pressing W
 		@update_balls = false
 
@@ -41,14 +33,20 @@ class GameWindow < Gosu::Window
 		self.restart
 		
 	end
+  
+  def rand_range(low, high)
+    return rand(high-low) + low
+  end
 	
 	def restart  #### When you press Z, this method gets called
 		
 		$balls = []     ### Array containing every ball object.
+    ball_radius = 11.0
 		
 		for i in 0..39  ### Repeat 40 times
-      $balls << Ball.new(self, 11.0+rand($universe_width-11.0), 11.0+rand($universe_height-11.0),
-        rand(360), rand(5.0), 11.0, 3.14*(11.0**2)) ### Create the ball
+      $balls << Ball.new(self, rand_range(@univ_left + ball_radius, @univ_right - ball_radius), 
+        rand_range(@univ_bottom + ball_radius, @univ_top - ball_radius),
+        rand(360), rand(5.0), ball_radius, 3.14*(ball_radius**2)) ### Create the ball
 		end
 		
 	end
@@ -84,15 +82,15 @@ class GameWindow < Gosu::Window
 		$balls.each     { |inst|  inst.draw }
 		
 		### Draw the universe borders
-		draw_line(30, 70, 0xffffffff, 30+$universe_width, 70, 0xffffffff, 0)
-		draw_line(30, 70+$universe_height, 0xffffffff, 30+$universe_width, 70+$universe_height, 0xffffffff, 0)
+		draw_line(@univ_left,  @univ_bottom, 0xffffffff, @univ_right, @univ_bottom, 0xffffffff, 0)
+		draw_line(@univ_left,  @univ_top,    0xffffffff, @univ_right, @univ_top,    0xffffffff, 0)
 		
-		draw_line(30, 70, 0xffffffff, 30, 70+$universe_height, 0xffffffff, 0)
-		draw_line(30+$universe_width, 70, 0xffffffff, 30+$universe_width, 70+$universe_height, 0xffffffff, 0)
+		draw_line(@univ_left,  @univ_bottom, 0xffffffff, @univ_left,  @univ_top,    0xffffffff, 0)
+		draw_line(@univ_right, @univ_bottom, 0xffffffff, @univ_right, @univ_top,    0xffffffff, 0)
 		
 		### Draw the instructions
-		@font.draw("Press W to Unpause/Pause", $window_width/2-50, 10, 2)
-		@font.draw("Press Arrow Keys to Move camera", $window_width/2-50, 30, 2)
+		@font.draw("Press W to Unpause/Pause", (@univ_left+@univ_right)/2-100, @univ_bottom-60, 2)
+		@font.draw("Press Q to single-step", (@univ_left+@univ_right)/2-100, @univ_bottom-40, 2)
 		
 	end
 	
