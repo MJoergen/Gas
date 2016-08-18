@@ -84,11 +84,11 @@ class GameWindow < Gosu::Window
 		$balls.each     { |inst|  inst.draw }
 		
 		### Draw the universe borders
-		draw_line(0+$window_width/2-$camera_x, 0+$window_height/2-$camera_y, 0xffffffff, $universe_width+$window_width/2-$camera_x, 0+$window_height/2-$camera_y, 0xffffffff, 0)
-		draw_line(0+$window_width/2-$camera_x, $universe_height+$window_height/2-$camera_y, 0xffffffff, $universe_width+$window_width/2-$camera_x, $universe_height+$window_height/2-$camera_y, 0xffffffff, 0)
+		draw_line(30, 70, 0xffffffff, 30+$universe_width, 70, 0xffffffff, 0)
+		draw_line(30, 70+$universe_height, 0xffffffff, 30+$universe_width, 70+$universe_height, 0xffffffff, 0)
 		
-		draw_line(0+$window_width/2-$camera_x, 0+$window_height/2-$camera_y, 0xffffffff, 0+$window_width/2-$camera_x, $universe_height+$window_height/2-$camera_y, 0xffffffff, 0)
-		draw_line($universe_width+$window_width/2-$camera_x, 0+$window_height/2-$camera_y, 0xffffffff, $universe_width+$window_width/2-$camera_x, $universe_height+$window_height/2-$camera_y, 0xffffffff, 0)
+		draw_line(30, 70, 0xffffffff, 30, 70+$universe_height, 0xffffffff, 0)
+		draw_line(30+$universe_width, 70, 0xffffffff, 30+$universe_width, 70+$universe_height, 0xffffffff, 0)
 		
 		### Draw the instructions
 		@font.draw("Press W to Unpause/Pause", $window_width/2-50, 10, 2)
