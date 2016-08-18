@@ -11,7 +11,6 @@ class GameWindow < Gosu::Window
   attr_reader :univ_left, :univ_right, :univ_top, :univ_bottom
   
 	def initialize
-		
 		super(WIDTH, HEIGHT, false)
 		
     @univ_left   = 30
@@ -31,7 +30,6 @@ class GameWindow < Gosu::Window
 
 		## Creates the objects
 		self.restart
-		
 	end
   
   def rand_range(low, high)
@@ -39,16 +37,14 @@ class GameWindow < Gosu::Window
   end
 	
 	def restart  #### When you press Z, this method gets called
-		
 		@balls = []     ### Array containing every ball object.
-    ball_radius = 11.0
+    ball_radius = 9.0
 		
-		for i in 0..39  ### Repeat 40 times
+		for i in 0..79  ### Repeat 40 times
       @balls << Ball.new(self, rand_range(@univ_left + ball_radius, @univ_right - ball_radius), 
         rand_range(@univ_bottom + ball_radius, @univ_top - ball_radius),
-        rand(360), rand(5.0), ball_radius, 3.14*(ball_radius**2)) ### Create the ball
+        rand(360), rand(8.0), ball_radius, 3.14*(ball_radius**2)) ### Create the ball
 		end
-		
 	end
 	
 	def update

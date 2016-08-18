@@ -3,7 +3,6 @@ class Ball
 	attr_reader :x, :y, :dir, :radius, :id, :mass, :vel_x, :vel_y
 	
 	def initialize(window, x, y, dir, vel, rad, mass)
-		
 		@window, @x, @y, @dir, @radius, @mass = window, x, y, dir, rad, mass
 		
 		## Initial values.
@@ -12,10 +11,6 @@ class Ball
 		
 		@colliding = false
 		@collision_point = false
-		
-		@collisionPointX = @x
-		@collisionPointY = @y
-		
 	end
 	
 	def update
@@ -27,14 +22,15 @@ class Ball
 		@y = @y + @vel_y
 		
 		### Check collision with walls
-		if @x+@radius > @window.univ_right and @vel_x > 0
+		if @x+@radius > @window.univ_right  and @vel_x > 0
 			@vel_x = -@vel_x
 		end
-		if @x-@radius < @window.univ_left and @vel_x < 0
+    
+		if @x-@radius < @window.univ_left   and @vel_x < 0
 			@vel_x = -@vel_x
 		end
 		
-		if @y+@radius > @window.univ_top and @vel_y > 0
+		if @y+@radius > @window.univ_top    and @vel_y > 0
 			@vel_y = -@vel_y
 		end
 		
@@ -44,22 +40,23 @@ class Ball
 	end
 	
 	def draw
-		if @colliding == false
-			@window.circle_img.draw_rot(@x, @y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xffFF0000)
-		else
-			@window.circle_img.draw_rot(@x, @y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xff00FF00)
-			if @collision_point == true
-				@window.circle_img.draw_rot(@collisionPointX, @collisionPointY, 1, @dir, 0.5, 0.5, 1.0*(7.0/50.0), 1.0*(7.0/50.0), 0xff0000FF)
-			end
+    color = 0xffFF0000  # Red
+    if @colliding == true
+      color = 0xff00FF00  # Green
+    end
+    @window.circle_img.draw_rot(@x, @y, 0, @dir, 0.5, 0.5, @radius/50.0, @radius/50.0, color)
+		
+		if @collision_point == true
+			@window.circle_img.draw_rot(@collisionPointX, @collisionPointY, 1, @dir,
+        0.5, 0.5, 7.0/50.0, 7.0/50.0, 0xff0000FF)
 		end
 	end
 	
 	def checkCollision(inst)  ### This method is only called once for each pair of balls
-		
 		if @x + @radius + inst.radius > inst.x and
 		   @x < inst.x + @radius + inst.radius and
 		   @y + @radius + inst.radius > inst.y and
-		   @y < inst.y + @radius + inst.radius
+		   @y < inst.y + @radius + inst.radius      ## This big 'if' is an optimization.
 			
 			dist = Gosu::distance(inst.x, inst.y, @x, @y)
 			if dist < (@radius + inst.radius)
@@ -69,9 +66,10 @@ class Ball
 				
 				@collision_point = true
 				
-				new_vel_self = new_velocity(@mass, inst.mass, Vector[@vel_x, @vel_y], Vector[inst.vel_x, inst.vel_y], Vector[@x, @y], Vector[inst.x, inst.y])
-				new_vel_inst = new_velocity(inst.mass, @mass, Vector[inst.vel_x, inst.vel_y], Vector[@vel_x, @vel_y], Vector[inst.x, inst.y], Vector[@x, @y])
-				
+				new_vel_self = new_velocity(@mass, inst.mass, Vector[@vel_x, @vel_y], Vector[inst.vel_x, inst.vel_y],
+          Vector[@x, @y], Vector[inst.x, inst.y])
+				new_vel_inst = new_velocity(inst.mass, @mass, Vector[inst.vel_x, inst.vel_y], Vector[@vel_x, @vel_y],
+          Vector[inst.x, inst.y], Vector[@x, @y])
 				
 				self.collision_ball(new_vel_self)
 				inst.collision_ball(new_vel_inst)
@@ -87,8 +85,13 @@ class Ball
 		@vel_y = new_vel[1]
 	end
 	
+  ## This values the new velocity after the collision
+  ## m1, v1, c1 : Mass, velocity, and center for this object.
+  ## m2, v2, c2 : Mass, velocity, and center for the other object.
+  ## The calculations are taken from the last equation of
+  ## The velocity and centers must be Vector's.
+  ## https://en.wikipedia.org/wiki/Elastic_collision#Two-dimensional_collision_with_two_moving_objects
 	def new_velocity(m1, m2, v1, v2, c1, c2)
-		
 		f = (2*m2)/(m1+m2)  ## Number
 		
 		dv = v1 - v2  ### Vector
@@ -96,12 +99,12 @@ class Ball
 		
 		v_new = v1 - f * (dv.inner_product(dc))/(dc.inner_product(dc)) * dc  ### Vector
 		
+    ## If the two objects are already moving away from each, then don't change the velocity.
 		if dv.inner_product(dc) > 0
 			return v1     ### Vector
 		else
 			return v_new  ### Vector
 		end
-		
 	end
 	
 end
