@@ -23,7 +23,7 @@ class GameWindow < Gosu::Window
 		$universe_height = $window_height - 140.0
 		
 		## Only two images are used in this program
-		@point_img = Gosu::Image.new(self, "media/Point2.png", true)
+		@point_img  = Gosu::Image.new(self, "media/Point2.png", true)
 		@circle_img = Gosu::Image.new(self, "media/filled_circle.png", true)
 		
 		## Default font
@@ -44,31 +44,23 @@ class GameWindow < Gosu::Window
 	def restart  #### When you press Z, this method gets called
 		
 		$balls = []     ### Array containing every ball object.
-		@ball_ids = []  ### Array used to manage the ball ids. Each ball has a unique number in "@id".
 		
 		for i in 0..39  ### Repeat 40 times
-			## Create a ball
-			self.create_ball(11.0+rand($universe_width-11.0), 11.0+rand($universe_height-11.0), rand(360), rand(5), 11.0, 3.14*(11.0**2))
+      $balls << Ball.new(self, 11.0+rand($universe_width-11.0), 11.0+rand($universe_height-11.0),
+        rand(360), rand(5.0), 11.0, 3.14*(11.0**2)) ### Create the ball
 		end
 		
 	end
 	
 	def update
-		
-		@kin_big = 0.0
-		@kin_small = 0.0
-		
 		self.caption = "Gas  -  [FPS: #{Gosu::fps.to_s}]"
 		
 		if @update_balls == true
-			
 			## Update balls
 			$balls.each     { |inst|  inst.update }
 			## CHECK FOR BALL COLLISION. THIS IS DONE BY THE WINDOW, NOT BY EACH BALL. THE REASON IS OPTIMISATION.
 			self.check_ball_collision
-		
 		end
-		
 	end
 	
 	def button_down(id)
@@ -103,20 +95,6 @@ class GameWindow < Gosu::Window
 		
 	end
 	
-	def create_ball(x, y, dir, vel, rad, mass)
-		
-		### Maximum of 200 balls when giving them a unique id. 200 is an abitrary number... change it to whatever you like. 
-		for i in 0..199
-			if !@ball_ids.include? i
-				id = i
-				@ball_ids << id
-				inst = Ball.new(self, x, y, dir, vel, rad, id, mass) ### Create the ball
-				$balls << inst  ### And remember the ball in the $balls array
-				break
-			end
-		end
-	end
-	
 	def check_ball_collision  
 		
 		### This method has been optimised to only check each collision ONCE. Therefore the entire collision check is 2x faster.
@@ -136,10 +114,6 @@ class GameWindow < Gosu::Window
 		
 	end
 	
-	def needs_cursor?
-		true
-	end
-	
 	def warp_camera(x, y)
 		$camera_x = x
 		$camera_y = y
@@ -151,9 +125,9 @@ class Ball
 	
 	attr_reader :x, :y, :dir, :radius, :id, :mass, :vel_x, :vel_y
 	
-	def initialize(window, x, y, dir, vel, rad, id, mass)
+	def initialize(window, x, y, dir, vel, rad, mass)
 		
-		@window, @x, @y, @dir, @radius, @id, @mass = window, x, y, dir, rad, id, mass
+		@window, @x, @y, @dir, @radius, @mass = window, x, y, dir, rad, mass
 		
 		## Initial values.
 		@vel_x = Gosu::offset_x(@dir, vel)
@@ -172,18 +146,9 @@ class Ball
 		@collision_point = false
 		self.move
 		
-		### Follow ball number 0. The White ball.
-		# if @id == 0
-			# @window.warp_camera(@x, @y)
-		# end
-		
 	end
 	
 	def draw
-		if @id == 0
-			@window.circle_img.draw_rot(@x+$window_width/2-$camera_x, @y+$window_height/2-$camera_y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xffFFFFFF)
-		else
-		
 			if @colliding == false
 				@window.circle_img.draw_rot(@x+$window_width/2-$camera_x, @y+$window_height/2-$camera_y, 0, @dir, 0.5, 0.5, 1.0*(@radius/50.0), 1.0*(@radius/50.0), 0xffFF0000)
 			else
@@ -192,8 +157,6 @@ class Ball
 					@window.circle_img.draw_rot(@collisionPointX+$window_width/2-$camera_x, @collisionPointY+$window_height/2-$camera_y, 1, @dir, 0.5, 0.5, 1.0*(7.0/50.0), 1.0*(7.0/50.0), 0xff0000FF)
 				end
 			end
-		
-		end
 	end
 	
 	def move
